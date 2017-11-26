@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +56,8 @@ namespace WebApiPrintService
             _config = new HttpSelfHostConfiguration(address);
             _config.MessageHandlers.Add(new CustomHeaderHandler());
             _config.MapHttpAttributeRoutes();
+            _config.Formatters.Clear();
+            _config.Formatters.Add(new JsonMediaTypeFormatter());
             _config.Routes.MapHttpRoute("DefaultApi",
                 "api/{controller}/{id}",
                 new { id = RouteParameter.Optional }
