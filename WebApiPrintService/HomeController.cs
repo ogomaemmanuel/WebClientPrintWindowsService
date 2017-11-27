@@ -23,7 +23,7 @@ public class PrintController : ApiController
 
     [HttpPost]
     [Route("print_api/print_file")]
-    public IHttpActionResult PrintFile(PrintModel printModel)
+    public IHttpActionResult PostPrintFile(PrintModel printModel)
     {
         if (ModelState.IsValid)
         {

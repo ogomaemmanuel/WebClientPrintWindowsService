@@ -23,11 +23,11 @@ namespace WebApiPrintService
                 x.Service<HttpApiService>(s =>
                 {
                     //s.("Piotr.WebApiTopShelfService");
-                    s.ConstructUsing(name => new HttpApiService(new Uri("http://localhost:6784")));
+                    s.ConstructUsing(name => new HttpApiService(new Uri("http://localhost:6788")));
                     s.WhenStarted(tc => tc.Start());
                     s.WhenStopped(tc => tc.Stop());
                 });
-                x.RunAsLocalSystem();
+                x.RunAsPrompt();
                 x.StartAutomatically();
                 x.SetDescription("Sample Web API Windows service");
                 x.SetDisplayName("EsoftWindowsPrintService");
@@ -56,6 +56,7 @@ namespace WebApiPrintService
             _config = new HttpSelfHostConfiguration(address);
             _config.MessageHandlers.Add(new CustomHeaderHandler());
             _config.MapHttpAttributeRoutes();
+            _config.MaxReceivedMessageSize = 2000000;
             _config.Formatters.Clear();
             _config.Formatters.Add(new JsonMediaTypeFormatter());
             _config.Routes.MapHttpRoute("DefaultApi",

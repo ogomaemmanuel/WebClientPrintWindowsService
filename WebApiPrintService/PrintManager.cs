@@ -1,8 +1,12 @@
-﻿using System;
+﻿using RawPrint;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
+using System.Management;
+using WebApiPrintService;
 
 internal class PrintManager
 {
@@ -13,38 +17,6 @@ internal class PrintManager
         this.fileStream = fileStream;
         Printing();
     }
-
-    private void Printing()
-    {
-        try
-        {
-
-            try
-            {
-                var printFont = new Font("Arial", 10);
-                PrintDocument pd = new PrintDocument();
-                pd.PrintController = new StandardPrintController();
-                pd.PrintPage += (sender, args) =>
-                {
-                    Image i = Image.FromStream(new MemoryStream(fileStream));
-                    args.PageSettings.PaperSize = new PaperSize("custom", i.Width, i.Height);
-                    args.Graphics.DrawImage(i, args.PageBounds);
-                };
-
-                pd.Print();
-
-            }
-            finally
-            {
-            }
-
-
-        }
-        catch (Exception ex)
-        {
-
-        }
-}
     public List<String> InstalledPrinters()
     {
         List<string> printers = new List<string>();
@@ -55,5 +27,51 @@ internal class PrintManager
             printers.Add(printer);
         }
         return printers;
+    }
+
+    private void Printing()
+    {
+        string path = Path.Combine(Path.GetTempPath(),Guid.NewGuid().ToString()+".pdf");
+        File.WriteAllBytes(path, fileStream);
+        var defaultprinter = GetDefaultPrinterName();
+        //Printer.PrintFile(defaultprinter, path);//option1
+
+        //option2
+        //if (File.Exists(path))
+        //{
+        //    var printJob = new Process
+        //    {
+        //        StartInfo = new ProcessStartInfo
+        //        {
+        //            FileName = path,
+        //            UseShellExecute = true,
+        //            Verb = "print",
+        //            CreateNoWindow = true,
+        //            WindowStyle = ProcessWindowStyle.Hidden,
+        //            WorkingDirectory = Path.GetDirectoryName(path)
+        //        }
+        //    };
+        //    printJob.Start();
+        //}
+
+        //endoption2
+
+        WindowsRawPrintUtility.SendFileTo(defaultprinter, path);
+    }
+
+    public static string GetDefaultPrinterName()
+    {
+        var query = new ObjectQuery("SELECT * FROM Win32_Printer");
+        var searcher = new ManagementObjectSearcher(query);
+
+        foreach (ManagementObject mo in searcher.Get())
+        {
+            if (((bool?)mo["Default"]) ?? false)
+            {
+                return mo["Name"] as string;
+            }
+        }
+
+        return null;
     }
 }
