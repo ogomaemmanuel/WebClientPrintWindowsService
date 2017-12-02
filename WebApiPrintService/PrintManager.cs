@@ -15,7 +15,7 @@ internal class PrintManager
     public PrintManager(byte[] fileStream)
     {
         this.fileStream = fileStream;
-        Printing();
+        Printing(1);
     }
     public List<String> InstalledPrinters()
     {
@@ -29,35 +29,36 @@ internal class PrintManager
         return printers;
     }
 
-    private void Printing()
-    {
-        string path = Path.Combine(Path.GetTempPath(),Guid.NewGuid().ToString()+".pdf");
-        File.WriteAllBytes(path, fileStream);
-        var defaultprinter = GetDefaultPrinterName();
-        //Printer.PrintFile(defaultprinter, path);//option1
+    //private void Printing()
+    //{
+    //    string path = Path.Combine(Path.GetTempPath(),Guid.NewGuid().ToString()+".pdf");
+    //    File.WriteAllBytes(path, fileStream);
+    //    var defaultprinter = GetDefaultPrinterName();
+    //    // Printer.PrintFile(defaultprinter, path, "Document Name");//option1
+    //    //Printer.PrintStream(defaultprinter, new MemoryStream(fileStream), "Document Name");
 
-        //option2
-        //if (File.Exists(path))
-        //{
-        //    var printJob = new Process
-        //    {
-        //        StartInfo = new ProcessStartInfo
-        //        {
-        //            FileName = path,
-        //            UseShellExecute = true,
-        //            Verb = "print",
-        //            CreateNoWindow = true,
-        //            WindowStyle = ProcessWindowStyle.Hidden,
-        //            WorkingDirectory = Path.GetDirectoryName(path)
-        //        }
-        //    };
-        //    printJob.Start();
-        //}
+    //    //option2
+    //    if (File.Exists(path))
+    //    {
+    //        var printJob = new Process
+    //        {
+    //            StartInfo = new ProcessStartInfo
+    //            {
+    //                FileName = path,
+    //                UseShellExecute = true,
+    //                Verb = "print",
+    //                CreateNoWindow = true,
+    //                WindowStyle = ProcessWindowStyle.Hidden,
+    //                WorkingDirectory = Path.GetDirectoryName(path)
+    //            }
+    //        };
+    //        printJob.Start();
+    //    }
 
-        //endoption2
+    //    //endoption2
 
-        WindowsRawPrintUtility.SendFileTo(defaultprinter, path);
-    }
+    //    //WindowsRawPrintUtility.SendFileTo(defaultprinter, path);
+    //}
 
     public static string GetDefaultPrinterName()
     {
@@ -74,4 +75,35 @@ internal class PrintManager
 
         return null;
     }
+    private void Printing(int x)
+    {
+        try
+        {
+
+            try
+            {
+                var printFont = new Font("Arial", 10);
+                PrintDocument pd = new PrintDocument();
+                pd.PrintController = new StandardPrintController();
+                pd.PrintPage += (sender, args) =>
+                {
+                    Image i = Image.FromStream(new MemoryStream(fileStream));
+                    args.Graphics.DrawImage(i, args.Graphics.VisibleClipBounds);
+                };
+
+                pd.Print();
+
+            }
+            finally
+            {
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
 }

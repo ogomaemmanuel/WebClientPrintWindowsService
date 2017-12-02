@@ -54,8 +54,9 @@ namespace WebApiPrintService
                 String.Format("Creating server at {0}",
                 address.ToString()));
             _config = new HttpSelfHostConfiguration(address);
-            _config.MessageHandlers.Add(new CustomHeaderHandler());
+           // _config.MessageHandlers.Add(new CustomHeaderHandler());
             _config.MapHttpAttributeRoutes();
+            _config.EnableCors(); 
             _config.MaxReceivedMessageSize = 2000000;
             _config.Formatters.Clear();
             _config.Formatters.Add(new JsonMediaTypeFormatter());
