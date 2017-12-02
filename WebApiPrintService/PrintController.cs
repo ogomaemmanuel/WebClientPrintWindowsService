@@ -2,23 +2,6 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Cors;
-[EnableCors("*", "*", "*")]
-public class HomeController : ApiController
-{
-    public string Get()
-    {
-        return "Hello World!";
-    }
-
-    public string Get(string name)
-    {
-        return "Hello " + name;
-    }
-
-  
-
-    
-}
 [EnableCors("*","*","*")]
 public class PrintController : ApiController
 {

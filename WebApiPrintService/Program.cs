@@ -29,7 +29,7 @@ namespace WebApiPrintService
                 });
                 x.RunAsPrompt();
                 x.StartAutomatically();
-                x.SetDescription("Sample Web API Windows service");
+                x.SetDescription("Esoft Web API Windows Print Service");
                 x.SetDisplayName("EsoftWindowsPrintService");
                 x.SetServiceName("EsoftWindowsPrintService");
             });
@@ -54,7 +54,6 @@ namespace WebApiPrintService
                 String.Format("Creating server at {0}",
                 address.ToString()));
             _config = new HttpSelfHostConfiguration(address);
-           // _config.MessageHandlers.Add(new CustomHeaderHandler());
             _config.MapHttpAttributeRoutes();
             _config.EnableCors(); 
             _config.MaxReceivedMessageSize = 2000000;
@@ -77,20 +76,6 @@ namespace WebApiPrintService
         {
             _server.CloseAsync().Wait();
             _server.Dispose();
-        }
-    }
-
-    public class CustomHeaderHandler : DelegatingHandler
-    {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
-        {
-            return base.SendAsync(request, cancellationToken)
-                .ContinueWith((task) =>
-                {
-                    HttpResponseMessage response = task.Result;
-                    response.Headers.Add("Access-Control-Allow-Origin", "*");
-                    return response;
-                });
         }
     }
 }

@@ -80,11 +80,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HomeController.cs" />
+    <Compile Include="PrintController.cs" />
     <Compile Include="PrintManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WindowsRawPrintUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
